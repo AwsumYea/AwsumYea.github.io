@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Dino Name Generator</title>
+    <style>
+        .comic {
+            font-family: "Comic Sans MS", cursive, sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<h2 class="comic">
+    Jacks's Dino Name Generator:
+</h2>
+
+<div>
+    <button onclick="generate(2, false)">Tiny name</button>
+    <button onclick="generate(3, false)">Small name</button>
+    <button onclick="generate(4, false)">Medium name</button>
+    <button onclick="generate(6, false)">Big name</button>
+    <button onclick="generate(14, false)">Humungous name</button>
+    <button onclick="generate(2, true)">Silly name</button>
+    <button onclick="generate(4, true)">Big Silly name</button>
+    <button onclick="sayName(dinoElem.innerHTML)">Say name</button>
+</div>
+
+<!--
+Here is our <h1> heading that will hold our Dino name,
+we gave it an id of "dino", so that we can reference it
+-->
+<h1 id="dino" class="comic">
+
+</h1>
+<div>
+    <textarea id="text"></textarea>
+    <button onclick="sayName(document.querySelector('#text').value)">Speak</button>
+</div>
+<!-- We make sure to put the script after the elements on the page, so that the script can see the page when it runs -->
+<script>
+    const vowels  = ['a','e','i','o','u','y'];
+    const nonVowels = ['w','r','t','p','s','d','f','g','h','j','k','l','z','c','v','b','n','m','br','tr','fr','sh','th','ed'];
+    const endings = ['osaur','osaurus','odon','drodon','otops','terix','asaurus','ceratops'];
+
+    // bonus items  - can you figure out how to include these in the word?
+    // maybe using an additional if block in the generate() function?
+    // What about adding some more buttons, like 'Silly tiny name' etc?
+    // How can you use the generate function for both silly and normal names?
+    const sillyBits = ['flappy','smelly','stinky','noisey','goofy','silly','education']
+
+    // Here we define a constant (like a variable, but it's not allowed to change)***
+    // dinoElem holds a reference to the element on the page that has an id of 'dino'.
+    // In HTML, if we want to reference an id we use a # before the name of it
+    const dinoElem = document.querySelector("#dino");
+
+    // In Javascript, Math.random() returns a floating point number (decimal) between 0 and 1,
+    // try it in the console to check. Because we want an integer,
+    // we multiply that float by our argument: `max` which will give a value between 0 and max,
+    // then we use floor() to round down the result to the nearest integer
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+    }
+
+    function generate(n, silly) {
+        // This is the variable we will use to generate the name
+        let dino = '';
+        // Here you need some kind of loop to choose letters
+        for (i = 0; i < n; i++) {
+            // The modulo operator % is like division /, except it returns the .
+            // In this case we use % 2 to check if it's an even number, for example:
+            // 3 / 2 = 1 with a remainder of 1, (so 3 % 2 = 1)
+            // 4 / 2 = 2 with a remainder of 0, (so 4 % 2 = 0)
+            // 5 / 2 = 2 with a remainder of 1, (so 5 % 2 = 1)
+            // 6 / 2 = 3 with a remainder of 0, (so 6 % 2 = 0)
+            if (i % 2 === 1) { // if i is odd
+                dino += vowels[getRandomInt(vowels.length)];
+            } else { // if i is  odd
+                dino += nonVowels[getRandomInt(nonVowels.length)];
+            }
+        }
+        if (silly) {
+            dino += sillyBits[getRandomInt(sillyBits.length)];
+        }
+        // Here we choose the ending
+        dino += endings[getRandomInt(endings.length)];
+        dinoElem.innerHTML = dino;
+        sayName(dino);
+    }
+
+    function sayName(dino) {
+        var msg = new SpeechSynthesisUtterance(dino);
+        window.speechSynthesis.speak(msg);
+    }
+
+    // *** NOTE that a const means that we can't re-bind something, but we can mutate what it refers to, or holds
+</script>
+
+</body>
+</html>
