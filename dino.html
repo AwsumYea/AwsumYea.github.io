@@ -25,6 +25,8 @@
     <button onclick="generate(2, true)">Silly name</button>
     <button onclick="generate(4, true)">Big Silly name</button>
     <button onclick="sayName(dinoElem.innerHTML)">Say name</button>
+    <button onclick="startInterval()">Start repeating</button>
+    <button onclick="stopRepeating()">Shush!</button>
 </div>
 
 <!--
@@ -54,6 +56,9 @@ we gave it an id of "dino", so that we can reference it
     // dinoElem holds a reference to the element on the page that has an id of 'dino'.
     // In HTML, if we want to reference an id we use a # before the name of it
     const dinoElem = document.querySelector("#dino");
+
+    // Repeat interval id
+    let repeatId;
 
     // In Javascript, Math.random() returns a floating point number (decimal) between 0 and 1,
     // try it in the console to check. Because we want an integer,
@@ -92,6 +97,18 @@ we gave it an id of "dino", so that we can reference it
     function sayName(dino) {
         var msg = new SpeechSynthesisUtterance(dino);
         window.speechSynthesis.speak(msg);
+    }
+    function startInterval() {
+        clearInterval(repeatId);
+        gen4();
+        repeatId = setInterval(gen4, 2500);
+    }
+    function gen4() {
+        generate(4, false);
+    }
+    function stopRepeating() {
+        clearInterval(repeatId);
+
     }
 
     // *** NOTE that a const means that we can't re-bind something, but we can mutate what it refers to, or holds

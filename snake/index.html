@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Snake to the tea</title>
+</head>
+<body>
+<h2>
+    Projeto para os Inglêses
+</h2>
+<canvas id="gc" width="400" height="400"></canvas>
+<script>
+    // Initialisation function
+    window.onload = function () {
+        canv = document.getElementById('gc');
+        ctx = canv.getContext('2d');
+        document.addEventListener("keydown", keyPush);
+        setInterval(game, 1000 / 10);
+    }
+
+    // Main game variables
+    xv=yv=0;
+    px=py=20;
+    tileCount=20;
+    tileSize=20;
+    ax=ay=15;
+    jx=jy=10;
+    trail = [];
+    tail = 5;
+    max_score = 1;
+
+    // Images
+    img_bus_front = new Image();
+    img_bus_front.src = 'front_bus.png';
+    img_bus_back = new Image();
+    img_bus_back.src = 'back_bus.png';
+    img_tea = new Image();
+    img_tea.src = 'TEA.png';
+    img_union_jack = new Image();
+    img_union_jack.src = 'unionJACK.png';
+
+    // Input handling function
+    // This function is called on every keypress
+    // but only looks for the arrow keys
+    function keyPush(event) {
+        switch(event.key) {
+            case 'ArrowLeft':
+                xv=-1; yv=0;
+                break;
+            case 'ArrowUp':
+                xv=0; yv=-1;
+                break;
+            case 'ArrowRight':
+                xv=1; yv=0;
+                break;
+            case 'ArrowDown':
+                xv=0; yv=1;
+                break;
+        }
+    }
+
+    // Game function that is called for EVERY frame rendered
+    function game() {
+        // Move bus according to velocity,
+        px += xv;
+        py += yv;
+
+        // Also wrap around bus if edge of canvas
+        if (px < 0) {
+            px = tileCount - 1;
+        }
+        if (py < 0) {
+            py = tileCount - 1;
+        }
+        if (px > tileCount -1) {
+            px = 0;
+        }
+        if (py > tileCount -1) {
+            py = 0;
+        }
+
+        // Draw black background
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0,0,canv.width,canv.height);
+
+        // Draw bus
+        for (let i = 0; i < trail.length; i++) {
+            //ctx.fillRect(trail[i].x*tileSize, trail[i].y*tileSize, tileSize-2, tileSize-2);
+            if (i == tail - 1) {
+                ctx.drawImage(img_bus_front, trail[i].x*tileSize, trail[i].y*tileSize);
+            } else {
+                ctx.drawImage(img_bus_back, trail[i].x*tileSize, trail[i].y*tileSize);
+            }
+            // Detect apple!
+            if(trail[i].x==px && trail[i].y==py) {
+                tail = 1;
+            }
+            // Detect crash!!!
+
+        }
+        trail.push({x:px,y:py});
+        while (trail.length > tail) {
+            trail.shift();
+        }
+
+        // If tea is slurped, make new random coordinates for tea
+        if (px==ax && py==ay) {
+            tail += 1;
+            ax=Math.floor(Math.random()*tileCount);
+            ay=Math.floor(Math.random()*tileCount);
+            //only set max length if current length is bigger than current max
+            if (max_score<tail) {
+                max_score = tail;
+            }
+
+        }
+        // Draw tea
+        ctx.drawImage(img_tea, ax*tileSize, ay*tileSize);
+
+        // if bus hits union jack, lose 2 bus segments
+        if (px==jx && py==jy) {
+            tail -= 2;
+            jx=Math.floor(Math.random()*tileCount);
+            jy=Math.floor(Math.random()*tileCount);
+
+        }
+        //Draw union jack
+        ctx.drawImage(img_union_jack, jx*tileSize, jy*tileSize);
+
+        //Check if tail = 0 and if true is game over!
+        if (tail<=0) {
+            window.alert(`GAME OVER old chap!! your length was 0 and your maximum length was ${max_score}`);
+        }
+    }
+
+
+</script>
+</body>
+</html>
